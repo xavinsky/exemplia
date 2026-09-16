@@ -1,0 +1,114 @@
+{% extends "socle/base.html" %}
+{% block titre %}Tri des tickets{% endblock %}
+{% block contenu %}
+<section class="cadre">
+  <h1>Tri des tickets</h1>
+  <p>La même tâche traitée par plusieurs approches : TF-IDF et régression logistique, embeddings et
+  régression, CamemBERT fine-tuné, LLM sans exemple. Chaque approche est un run MLflow ; la meilleure
+  est promue avec l'alias <code>champion</code> et c'est elle qui répond ci-dessous.</p>
+  <p>Lancer les expériences : <code>uv run python -m exemplia.tri_tickets.experiences</code>
+  · <a href="{{ comparaison or mlflow_url }}" target="_blank" rel="noopener">comparer les runs dans
+  MLflow</a></p>
+</section>
+{% if erreur %}<div class="msg garde">MLflow indisponible : {{ erreur }}</div>{% endif %}
+<div class="travail trois">
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Classer un ticket</h3>
+      <form class="formulaire" hx-post="/tri-tickets/predire" hx-target="#prediction">
+        <label>Modèle
+          <select name="approche">
+            <option value="{{ alias }}">Champion{% if champion %} — {{ champion.tags.get('approche', '?') }}{% endif %}</option>
+            {% for a in approches %}
+            <option value="{{ a.run_id }}">{{ a.approche }} — F1 {{ '%.3f' % a.f1_macro }}, {{ '%.1f' % a.latence }} ms/ticket</option>
+            {% endfor %}
+          </select>
+        </label>
+        <textarea name="texte" id="ticket" required placeholder="Mon colis n'est pas arrivé depuis une semaine."></textarea>
+        <div><button class="btn" type="submit">Classer</button></div>
+      </form>
+      <p class="detail">Le champion est l'approche promue automatiquement ; les autres restent
+      servies depuis leur run pour être comparées sur le même ticket.</p>
+    </section>
+    <div id="prediction"></div>
+  </div>
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Champion</h3>
+      {% if champion %}
+      <p>Approche <span class="etiquette e2">{{ champion.tags.get('approche', '?') }}</span>,
+      servie par l'alias <code>models:/{{ nom_modele }}@{{ alias }}</code>.</p>
+      <p class="detail">Cet alias pointe la version {{ champion.version }} du registre — le
+      compteur s'incrémente à chaque promotion. Changer de modèle servi, c'est déplacer l'alias,
+      sans rien redéployer.</p>
+      {% else %}<p>Aucun champion enregistré.</p>{% endif %}
+    </section>
+    {% if approches %}
+    <section class="cadre">
+      <h3>Approches comparées</h3>
+      <div class="tableau">
+        <table>
+          <thead><tr><th>Approche</th><th>F1 macro</th><th>Exactitude</th><th>ms/ticket</th></tr></thead>
+          <tbody>
+            {% for a in approches %}
+            <tr>
+              <td><a href="{{ a.lien }}" target="_blank" rel="noopener">{{ a.approche }}</a>{% if champion and a.approche == champion.tags.get('approche') %} <span class="etiquette e3">champion</span>{% endif %}</td>
+              <td>{{ '%.3f' % a.f1_macro }}</td>
+              <td>{{ '%.3f' % a.exactitude }}</td>
+              <td>{{ '%.1f' % a.latence }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="detail">Meilleur run de chaque approche, sur le même jeu de test. Chaque nom ouvre
+      son run dans MLflow — paramètres, métriques, matrice de confusion, modèle enregistré.</p>
+    </section>
+    {% endif %}
+  </div>
+  <div class="colonne">
+    <section class="cadre essais">
+      <h3>Exemples d'utilisation</h3>
+      {% for t in tickets_exemple %}
+      {% for e in t.get('essais', [{'libelle': 'Essayer', 'approche': ''}]) %}
+      <p>
+        <button class="btn {{ 'b4' if e.get('erreur') else 'b2' }}" type="button"
+          data-t="{{ t.texte }}" data-a="{{ e.approche }}"
+          onclick="essayer(this)">{{ e.libelle }}</button>
+        <span>{{ t.texte }}</span>
+      </p>
+      {% endfor %}
+      {% endfor %}
+      <p class="detail">Les boutons en orange désignent un modèle qui se trompe sur ce ticket.</p>
+    </section>
+  </div>
+</div>
+{% if liens_mlflow %}
+<details class="cadre">
+  <summary>Ce que le cycle utilise de MLflow</summary>
+  <ul class="liens-mlflow">
+    {% for libelle, url, description in liens_mlflow %}
+    <li><a href="{{ url }}" target="_blank" rel="noopener">{{ libelle }}</a>
+      <span class="detail">{{ description }}</span></li>
+    {% endfor %}
+  </ul>
+  <p class="detail">Les traces des exemples sont dans l'expérience <code>exemplia</code>, sous
+  l'onglet « Traces » ; les évaluations, dans les expériences <code>evaluation-*</code>.</p>
+</details>
+{% endif %}
+<script>
+  // Un bouton peut imposer le modèle : les options portent des identifiants de run, on retrouve
+  // l'approche par son libellé.
+  function essayer(bouton) {
+    ticket.value = bouton.dataset.t;
+    const approche = bouton.dataset.a;
+    if (!approche) return;
+    for (const option of document.querySelector("select[name=approche]").options) {
+      if (option.text.toLowerCase().startsWith(approche.toLowerCase())) {
+        option.selected = true;
+        return;
+      }
+    }
+  }
+</script>
+{% endblock %}

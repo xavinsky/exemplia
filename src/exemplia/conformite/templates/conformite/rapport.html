@@ -1,0 +1,19 @@
+<h2>Rapport : <span class="verdict-{{ rapport.statut }}">{{ rapport.statut }}</span></h2>
+{% include "socle/trace.html" %}
+<p>{% for verdict, nombre in rapport.synthese.items() %}<span class="etiquette">{{ verdict }} : {{ nombre }}</span> {% endfor %}</p>
+{% for alerte in rapport.alertes %}<div class="msg garde">{{ alerte }}</div>{% endfor %}
+<div class="tableau">
+  <table>
+    <thead><tr><th>Règle</th><th>Verdict</th><th>Clause citée</th><th>Raisonnement</th></tr></thead>
+    <tbody>
+      {% for r in rapport.resultats %}
+      <tr>
+        <td>{{ r.regle.code }} — {{ r.regle.titre }}</td>
+        <td class="verdict-{{ r.verdict }}">{{ r.verdict }}</td>
+        <td>{% if r.clause_citee %}« {{ r.clause_citee }} »{% if not r.citation_verifiee %} <span class="etiquette e4">introuvable</span>{% endif %}{% else %}—{% endif %}</td>
+        <td>{{ r.raisonnement }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

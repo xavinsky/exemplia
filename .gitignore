@@ -1,0 +1,29 @@
+# Environnement Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Caches d'outils
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Configuration locale et secrets
+.env
+
+# Artefacts produits à l'exécution
+mlflow.db
+mlruns/
+mlartifacts/
+data/entreprise/index/
+modeles/
+
+# Éditeurs
+.idea/
+.vscode/
+
+# Documents de travail interne (backlog, suivi, notes) : non publiés
+projet/

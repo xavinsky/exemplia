@@ -1,0 +1,56 @@
+{% extends "socle/base.html" %}
+{% block titre %}Service client{% endblock %}
+{% block side %}
+<nav class="side">
+  <div class="side-groupe-libelle">Client connecté</div>
+  {% for c in clients %}
+  <a href="/service-client?client={{ c.id }}" class="{{ 'on' if c.id == session.client_id else '' }}">{{ c.nom }}</a>
+  {% endfor %}
+</nav>
+{% endblock %}
+{% block contenu %}
+<section class="cadre">
+  <h1>Service client</h1>
+  <p>L'assistant consulte les commandes du client connecté. Pour une annulation ou un retour, il
+  prépare l'action et c'est le client qui confirme. Les appels d'outils et les verdicts de garde
+  sont affichés dans le fil.</p>
+</section>
+<div class="travail trois">
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Conversation</h3>
+      <form class="formulaire" hx-post="/service-client/message" hx-target="#fil" hx-swap="beforeend"
+            hx-on::after-request="this.reset()">
+        <input type="hidden" name="session_id" value="{{ session.id }}">
+        <textarea name="texte" id="message" required placeholder="Où en est ma dernière commande ?"></textarea>
+        <div><button class="btn" type="submit">Envoyer</button></div>
+      </form>
+    </section>
+    <div class="fil" id="fil"></div>
+  </div>
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Commandes de {{ session.client_id }}</h3>
+      <div class="tableau">
+        <table>
+          <thead><tr><th>Commande</th><th>Date</th><th>Statut</th><th>Montant</th></tr></thead>
+          <tbody>
+            {% for c in commandes %}
+            <tr><td>{{ c.id }}</td><td>{{ c.date_commande }}</td><td>{{ c.statut }}</td><td>{{ c.montant }} €</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+  <div class="colonne">
+    <section class="cadre essais">
+      <h3>Exemples d'utilisation</h3>
+      {% for m in messages_exemple %}
+      <p><button class="btn b2" type="button" data-m="{{ m }}"
+        onclick="message.value = this.dataset.m; message.focus()">Essayer</button> {{ m }}</p>
+      {% endfor %}
+    </section>
+  </div>
+</div>
+{% endblock %}

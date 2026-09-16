@@ -1,0 +1,45 @@
+{% extends "socle/base.html" %}
+{% block titre %}Workflow d'agents{% endblock %}
+{% block contenu %}
+<section class="cadre">
+  <h1>Workflow d'agents</h1>
+  <p>Un email entrant est traité de bout en bout, jusqu'à un brouillon validé par un conseiller.
+  <strong>Workflow</strong> : étapes fixées par le code (classer, extraire, vérifier, rédiger).
+  <strong>Orchestrateur</strong> : un superviseur choisit quels agents spécialisés consulter. Dans
+  les deux cas, le graphe se met en pause pour la validation humaine et aucune action n'est exécutée
+  sans elle.</p>
+</section>
+<div class="travail">
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Email reçu</h3>
+      <form class="formulaire" hx-post="/workflow/traiter" hx-target="#traitement">
+        <label>Expéditeur <input type="text" class="large" name="expediteur" id="expediteur" required></label>
+        <label>Objet <input type="text" class="large" name="objet" id="objet" required></label>
+        <label>Message <textarea name="corps" id="corps" required></textarea></label>
+        <div class="ligne-champs">
+          <label>Architecture
+            <select name="mode">
+              <option value="workflow">Workflow déterministe</option>
+              <option value="orchestrateur">Agent orchestrateur</option>
+            </select>
+          </label>
+          <button class="btn" type="submit">Traiter</button>
+         
+        </div>
+      </form>
+    </section>
+    <div id="traitement"></div>
+  </div>
+  <div class="colonne">
+    <section class="cadre essais">
+      <h3>Exemples d'utilisation</h3>
+      {% for e in emails %}
+      <p><button class="btn b2" type="button" data-exp="{{ e.expediteur }}" data-obj="{{ e.objet }}" data-corps="{{ e.corps }}"
+        onclick="expediteur.value=this.dataset.exp; objet.value=this.dataset.obj; corps.value=this.dataset.corps">Charger</button>
+        <span class="etiquette">{{ e.id }}</span></p>
+      {% endfor %}
+    </section>
+  </div>
+</div>
+{% endblock %}

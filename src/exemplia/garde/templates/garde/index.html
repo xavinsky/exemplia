@@ -1,0 +1,110 @@
+{% extends "socle/base.html" %}
+{% block titre %}Garde{% endblock %}
+{% block contenu %}
+<section class="cadre">
+  <h1>Garde d'entrée et de sortie</h1>
+  <p>Chaque contrôle rend un verdict : autoriser, modifier (données masquées) ou bloquer. La chaîne
+  s'arrête au premier blocage. Les contrôles à base de modèle (modération, juge) ne sont appelés
+  que si la case est cochée.</p>
+  <p>Sur cette page, <strong>vous écrivez à la place de l'assistant</strong>. En production, la
+  chaîne est : le client pose une question → le code rassemble les sources (documents, résultats
+  d'outils) → l'assistant rédige sa réponse → la garde contrôle cette réponse avant de l'envoyer.
+  En sens « sortie », le texte à contrôler est donc la réponse de l'assistant, et le contexte
+  reconstitue ce qu'il avait sous les yeux pour la produire.</p>
+</section>
+<div class="travail trois">
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Texte à contrôler</h3>
+      <p class="detail">Choisissez d'abord ce que vous contrôlez : un message qui entre, avant qu'il
+      n'atteigne le modèle, ou une réponse qui sort, avant qu'elle n'atteigne le client. Les champs
+      suivent, dans l'ordre chronologique de la conversation.</p>
+      <form class="formulaire" hx-post="/garde/verifier" hx-target="#resultat">
+        <div class="ligne-champs">
+          <label>Sens
+            <select name="sens" id="sens" onchange="majSens()">
+              <option value="entree">Entrée : message de l'utilisateur</option>
+              <option value="sortie">Sortie : réponse de l'assistant</option>
+            </select>
+          </label>
+          <label><span><input type="checkbox" name="avec_modeles" id="avec_modeles" value="true">
+            Contrôles à base de modèle : modération en entrée, juge en sortie</span></label>
+        </div>
+
+        <div id="etapes-sortie" hidden>
+          <label>1. Question de l'utilisateur
+            <input type="text" class="large" name="question" id="question">
+          </label>
+          <label>
+            <span>2. Réponse intermédiaire des outils — passages retrouvés, résultats de requêtes,
+            fournis au modèle</span>
+            <textarea name="sources" id="sources"></textarea>
+            <span class="detail">Séparer plusieurs sources par une ligne <code>---</code>.</span>
+          </label>
+        </div>
+
+        <label id="libelle-texte" for="texte">Message de l'utilisateur, tel qu'il arrive</label>
+        <textarea name="texte" id="texte" required></textarea>
+
+        <div><button class="btn" type="submit">Contrôler</button></div>
+      </form>
+    </section>
+    <section class="cadre" id="resultat"><p class="detail">Le résultat s'affiche ici.</p></section>
+  </div>
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Chaîne de contrôles</h3>
+      <div class="tableau">
+        <table>
+          <thead><tr><th>Sens</th><th>Contrôle</th><th>Technique</th><th>Ce qu'il cherche</th></tr></thead>
+          <tbody>
+            {% for sens, nom, technique, cherche in controles %}
+            <tr><td>{{ sens }}</td><td>{{ nom }}</td><td>{{ technique }}</td><td>{{ cherche }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="detail">Dans l'ordre d'exécution : du contrôle gratuit au plus coûteux.</p>
+    </section>
+  </div>
+  <div class="colonne">
+    <section class="cadre essais">
+      <h3>Exemples d'utilisation</h3>
+      {% for e in exemples %}
+      <p>
+        <button class="btn b2" type="button"
+          data-texte="{{ e.texte }}" data-sens="{{ e.sens }}"
+          data-modeles="{{ 'oui' if e.modeles else 'non' }}"
+          data-question="{{ e.get('question', '') }}" data-sources="{{ e.get('sources', '') }}"
+          onclick="remplir(this)">Essayer</button>
+        <span><strong>{{ e.libelle }}</strong> — {{ e.attendu }}<br>
+        <span class="detail">{{ e.texte }}</span></span>
+      </p>
+      {% endfor %}
+    </section>
+  </div>
+</div>
+<script>
+  // Les étapes affichées suivent le sens : en entrée, il n'y a encore ni question ni sources.
+  function majSens() {
+    const sortie = sens.value === "sortie";
+    document.getElementById("etapes-sortie").hidden = !sortie;
+    document.getElementById("libelle-texte").textContent = sortie
+      ? "3. Génération du LLM — la réponse à contrôler avant envoi au client"
+      : "Message de l'utilisateur, tel qu'il arrive";
+  }
+
+  function remplir(bouton) {
+    const d = bouton.dataset;
+    sens.value = d.sens;
+    question.value = d.question;
+    sources.value = d.sources;
+    texte.value = d.texte;
+    // Chaque exemple dit s'il a besoin d'un contrôle à base de modèle.
+    avec_modeles.checked = d.modeles === "oui";
+    majSens();
+  }
+
+  majSens();
+</script>
+{% endblock %}

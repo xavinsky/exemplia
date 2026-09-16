@@ -1,0 +1,7 @@
+{% set explication = explication_html(actif) %}
+{% if explication %}
+<details class="cadre explication">
+  <summary>Comment ça marche ?</summary>
+  {{ explication | safe }}
+</details>
+{% endif %}

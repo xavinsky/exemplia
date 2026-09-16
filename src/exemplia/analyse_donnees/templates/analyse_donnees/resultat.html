@@ -1,0 +1,23 @@
+<div class="deux-colonnes">
+  <section class="cadre">
+    <h3>Synthèse</h3>
+    {% include "socle/trace.html" %}
+    <div class="msg assistant">{{ r.synthese | markdown }}</div>
+    {% if r.erreurs %}
+    <h5>Tentatives corrigées</h5>
+    {% for e in r.erreurs %}<div class="msg garde">{{ e }}</div>{% endfor %}
+    {% endif %}
+  </section>
+  <section class="cadre">
+    <h3>Requête exécutée</h3>
+    <pre>{{ r.sql or '—' }}</pre>
+  </section>
+</div>
+{% if r.colonnes %}
+<div class="tableau">
+  <table>
+    <thead><tr>{% for c in r.colonnes %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for ligne in r.lignes %}<tr>{% for v in ligne %}<td>{{ v }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table>
+</div>
+{% endif %}

@@ -1,0 +1,26 @@
+{% include "socle/trace.html" %}
+{% for e in evenements %}
+  {% if e.type == "outil" %}
+  <details class="msg outil">
+    <summary>outil : {{ e.texte }}({{ e.details.arguments | tojson }})</summary>
+    {{ e.details.resultat | tojson(indent=2) }}
+  </details>
+  {% elif e.type == "assistant" %}
+  <div class="msg assistant">{{ e.texte | markdown }}</div>
+  {% else %}
+  <div class="msg {{ e.type }}">{{ e.texte }}</div>
+  {% endif %}
+{% endfor %}
+{% if session.action_en_attente %}
+{% set a = session.action_en_attente %}
+<div class="msg systeme" id="action-{{ a.id }}">
+  <h5>Confirmation requise</h5>
+  <p>{{ a.recapitulatif }}</p>
+  <form hx-post="/service-client/confirmer" hx-target="#action-{{ a.id }}" hx-swap="outerHTML">
+    <input type="hidden" name="session_id" value="{{ session.id }}">
+    <input type="hidden" name="action_id" value="{{ a.id }}">
+    <button class="btn b3" name="accepte" value="true">Confirmer</button>
+    <button class="btn b4" name="accepte" value="false">Refuser</button>
+  </form>
+</div>
+{% endif %}

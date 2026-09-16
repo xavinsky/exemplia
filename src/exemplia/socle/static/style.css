@@ -1,0 +1,319 @@
+/* Style commun des exemples : une couleur par rôle d'élément, coins carrés sur les cadres,
+   ombres portées, densité compacte. Mode sombre : fonds noirs neutres séparés par des bordures. */
+
+:root {
+  color-scheme: light;
+  --accent: hsl(222 55% 45%);
+  --c1: hsl(184 100% 33%);
+  --c2: hsl(143 58% 39%);
+  --c3: hsl(18 93% 58%);
+  --c4: hsl(28 96% 65%);
+
+  --bg: hsl(240 45% 98%);
+  --surface: #ffffff;
+  --surface2: hsl(240 60% 96%);
+  --text: hsl(240 25% 14%);
+  --muted: hsl(240 25% 14%);
+  --border: hsl(240 20% 90%);
+
+  --h1: var(--accent);
+  --h2: var(--c1);
+  --h3: var(--c2);
+  --h4: var(--c3);
+  --h5: var(--c4);
+  --h6: var(--text);
+  --lien: var(--c1);
+  --etiquette: var(--accent);
+
+  --h1-soft: hsl(222 65% 93%);
+  --h2-soft: hsl(184 90% 93%);
+  --h3-soft: hsl(143 68% 93%);
+  --h4-soft: hsl(18 90% 93%);
+  --h5-soft: hsl(28 90% 93%);
+  --h1-contrast: #ffffff;
+  --h2-contrast: #ffffff;
+  --h3-contrast: #ffffff;
+  --h4-contrast: #0c1420;
+  --h5-contrast: #0c1420;
+  --champ-fond: linear-gradient(135deg, hsl(143 37% 91%), hsl(143 37% 99%));
+
+  --menuH-bg: hsl(222 61% 29%);
+  --menuH-text: #ffffff;
+  --menuH-hover-bg: hsl(222 61% 45%);
+  --menuH-on-bg: hsl(222 61% 89%);
+  --menuH-on-text: #0c1420;
+  --menuL-bg: hsl(222 61% 89%);
+  --menuL-text: #0c1420;
+  --menuL-hover-bg: hsl(222 61% 45%);
+  --menuL-hover-text: #ffffff;
+  --menuL-on-bg: hsl(222 61% 29%);
+  --menuL-on-text: #ffffff;
+  --tableau-entete: var(--menuL-bg);
+  --tableau-entete-text: var(--menuL-text);
+
+  --ombre: drop-shadow(0 5px 16px hsl(240 40% 18% / .32));
+  --bordure-cadre: none;
+
+  --police-titres: "Palatino Linotype", Palatino, "Book Antiqua", serif;
+  --police-texte: Georgia, "Iowan Old Style", Charter, serif;
+  --police-code: ui-monospace, "DejaVu Sans Mono", Menlo, Consolas, monospace;
+  --taille: 15px;
+  --t-h1: 26px; --t-h2: 24px; --t-h3: 18px; --t-h4: 17px; --t-h5: 16px; --t-h6: 15px;
+
+  --r-btn: 6px;
+  --r-tag: 14px;
+  --pad-cadre: 8px 10px;
+  --pad-cellule: 4px 8px;
+  --ecart: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: hsl(0 0% 4%);
+    --surface: hsl(0 0% 12%);
+    --surface2: hsl(0 0% 8%);
+    --text: hsl(0 0% 90%);
+    --muted: hsl(0 0% 68%);
+    --border: hsl(222 55% 80% / .45);
+    --h1: hsl(222 55% 70%);
+    --h2: hsl(184 90% 43%);
+    --h3: hsl(143 58% 46%);
+    --h4: hsl(18 68% 54%);
+    --h5: hsl(28 90% 57%);
+    --h6: var(--text);
+    --h1-soft: hsl(222 30% 20%);
+    --h2-soft: hsl(184 40% 16%);
+    --h3-soft: hsl(143 30% 16%);
+    --h4-soft: hsl(18 40% 18%);
+    --h5-soft: hsl(28 40% 18%);
+    --h1-contrast: #0c1420; --h2-contrast: #0c1420; --h3-contrast: #0c1420;
+    --champ-fond: linear-gradient(135deg, hsl(143 12% 14%), hsl(143 12% 19%));
+    --menuH-bg: hsl(0 0% 4%);
+    --menuH-text: hsl(222 55% 80%);
+    --menuH-hover-bg: hsl(0 0% 14%);
+    --menuH-on-bg: hsl(0 0% 20%);
+    --menuH-on-text: hsl(222 55% 80%);
+    --menuL-bg: hsl(0 0% 4%);
+    --menuL-text: hsl(222 55% 80%);
+    --menuL-hover-bg: hsl(0 0% 14%);
+    --menuL-hover-text: hsl(222 55% 80%);
+    --menuL-on-bg: hsl(0 0% 20%);
+    --menuL-on-text: hsl(222 55% 80%);
+    --tableau-entete: hsl(0 0% 16%);
+    --tableau-entete-text: hsl(222 55% 80%);
+    --ombre: drop-shadow(0 0 0 transparent);
+    --bordure-cadre: 1px solid var(--border);
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: var(--police-texte); font-size: var(--taille); line-height: 1.45;
+}
+a { color: var(--lien); }
+h1, h2, h3, h4, h5, h6 { font-family: var(--police-titres); font-weight: 700; line-height: 1.15; margin: 0 0 6px; text-wrap: balance; }
+h1 { font-size: var(--t-h1); color: var(--h1); }
+h2 { font-size: var(--t-h2); color: var(--h2); }
+h3 { font-size: var(--t-h3); color: var(--h3); text-transform: uppercase; letter-spacing: .04em; }
+h4 { font-size: var(--t-h4); color: var(--h4); text-transform: uppercase; letter-spacing: .04em; }
+h5 { font-size: var(--t-h5); color: var(--h5); text-transform: uppercase; letter-spacing: .04em; }
+h6 { font-size: var(--t-h6); color: var(--h6); text-transform: uppercase; letter-spacing: .04em; }
+p { margin: 0 0 6px; }
+
+/* Menu horizontal */
+.nav {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px;
+  background: var(--menuH-bg); padding: 6px 10px; filter: var(--ombre);
+  border-bottom: var(--bordure-cadre);
+}
+.nav .marque { font-family: var(--police-titres); font-weight: 700; color: var(--menuH-text); text-decoration: none; }
+.nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; }
+.nav ul a { display: block; padding: 4px 8px; color: var(--menuH-text); text-decoration: none; border-radius: var(--r-btn); }
+.nav ul a:hover { background: var(--menuH-hover-bg); }
+.nav ul a.on { background: var(--menuH-on-bg); color: var(--menuH-on-text); font-weight: 700; }
+
+/* Mise en page : menu latéral optionnel + zone principale */
+.corps { display: flex; align-items: stretch; min-height: calc(100vh - 40px); }
+.side {
+  width: 200px; flex: none; background: var(--menuL-bg); padding: 6px 0;
+  filter: var(--ombre); border-right: var(--bordure-cadre);
+}
+.side a, .side button.lien-side {
+  display: block; width: 100%; text-align: left; padding: 4px 6px; color: var(--menuL-text);
+  text-decoration: none; background: transparent; border: none; border-bottom: 1px solid var(--border);
+  font: inherit; cursor: pointer;
+}
+.side a:hover, .side button.lien-side:hover { background: var(--menuL-hover-bg); color: var(--menuL-hover-text); }
+.side a.on { background: var(--menuL-on-bg); color: var(--menuL-on-text); font-weight: 700; }
+.side-groupe { border-top: 2px solid var(--border); }
+.side-groupe-libelle {
+  padding: 4px 6px 3px; font-size: .72em; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--menuL-text);
+}
+.main { flex: 1; min-width: 0; padding: 6px 8px; display: flex; flex-direction: column; gap: var(--ecart); }
+@media (max-width: 720px) { .corps { flex-direction: column; } .side { width: 100%; } }
+
+/* Cadres */
+.cadre {
+  background: var(--surface); padding: var(--pad-cadre); border-radius: 0;
+  filter: var(--ombre); border: var(--bordure-cadre);
+}
+.cadre h5 { margin-bottom: 4px; }
+.cadre p.detail { color: var(--muted); }
+.deux-colonnes { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--ecart); align-items: start; }
+@media (max-width: 900px) { .deux-colonnes { grid-template-columns: 1fr; } }
+
+/* Boutons : couleur choisie par bouton */
+.btn {
+  display: inline-block; border: none; padding: 5px 12px; font: inherit; font-weight: 650;
+  border-radius: var(--r-btn); cursor: pointer; filter: var(--ombre); text-decoration: none;
+  background: var(--h1); color: var(--h1-contrast);
+  transition: filter .15s, transform .15s;
+}
+.btn:hover { filter: var(--ombre) brightness(.92); transform: translateY(-1px); }
+.btn.b2 { background: var(--h2); color: var(--h2-contrast); }
+.btn.b3 { background: var(--h3); color: var(--h3-contrast); }
+.btn.b4 { background: var(--h4); color: var(--h4-contrast); }
+.btn.b5 { background: var(--h5); color: var(--h5-contrast); }
+.btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } .btn:hover { transform: none; } }
+
+/* Formulaires */
+form.formulaire { display: flex; flex-direction: column; gap: 6px; }
+.ligne-champs { display: flex; flex-wrap: wrap; gap: 6px; align-items: end; }
+label { display: flex; flex-direction: column; gap: 2px; }
+input[type=text], input[type=number], select, textarea {
+  font: inherit; color: var(--text); background: var(--champ-fond);
+  border: 1px solid var(--border); border-radius: var(--r-btn); padding: 4px 8px; max-width: 100%;
+}
+textarea { width: 100%; min-height: 6em; resize: vertical; }
+input[type=text].large { width: 100%; }
+
+/* Étiquettes */
+.etiquette {
+  display: inline-block; padding: 1px 8px; border-radius: var(--r-tag); font-weight: 650;
+  background: var(--h1-soft); color: var(--etiquette);
+}
+.etiquette.e2 { background: var(--h2-soft); color: var(--h2); }
+.etiquette.e3 { background: var(--h3-soft); color: var(--h3); }
+.etiquette.e4 { background: var(--h4-soft); color: var(--h4); }
+.etiquette.e5 { background: var(--h5-soft); color: var(--h5); }
+
+/* Tableaux */
+.tableau { overflow-x: auto; filter: var(--ombre); border: var(--bordure-cadre); }
+table { border-collapse: collapse; width: 100%; background: var(--surface); }
+th { background: var(--tableau-entete); color: var(--tableau-entete-text); text-align: left; font-weight: 700; }
+th, td { padding: var(--pad-cellule); border-right: 1px solid var(--border); color: inherit; }
+td { color: var(--text); }
+th:last-child, td:last-child { border-right: none; }
+tbody tr:nth-child(even) { background: var(--surface2); }
+
+/* Code */
+pre, code { font-family: var(--police-code); font-size: 1em; }
+pre {
+  margin: 0; padding: var(--pad-cadre); background: var(--h5-soft); overflow-x: auto;
+  white-space: pre-wrap; filter: var(--ombre); border: var(--bordure-cadre);
+}
+
+/* Conversation */
+.fil { display: flex; flex-direction: column; gap: 4px; }
+.msg { padding: var(--pad-cadre); max-width: 85%; white-space: pre-wrap; border: var(--bordure-cadre); }
+.msg.utilisateur { align-self: flex-end; background: var(--h2-soft); }
+.msg.assistant { align-self: flex-start; background: var(--surface); filter: var(--ombre); }
+/* La réponse d'un modèle est du Markdown rendu : mise en page normale, marges resserrées. */
+.msg.assistant { white-space: normal; }
+.msg.assistant > :first-child { margin-top: 0; }
+.msg.assistant > :last-child { margin-bottom: 0; }
+.msg.assistant p { margin: .5em 0; }
+.msg.assistant ul, .msg.assistant ol { margin: .5em 0; padding-left: 1.4em; }
+.msg.outil { align-self: flex-start; background: var(--h5-soft); font-family: var(--police-code); }
+.msg.garde { align-self: stretch; max-width: none; background: var(--h4-soft); }
+.msg.systeme { align-self: stretch; max-width: none; background: var(--h1-soft); }
+
+/* Verdicts */
+.verdict-conforme, .verdict-autoriser { color: var(--h3); font-weight: 700; }
+.verdict-non_conforme, .verdict-bloquer { color: var(--h4); font-weight: 700; }
+.verdict-absent, .verdict-modifier { color: var(--h5); font-weight: 700; }
+.verdict-a_verifier { color: var(--h1); font-weight: 700; }
+
+.htmx-indicator { display: none; }
+.htmx-request .htmx-indicator, .htmx-request.htmx-indicator { display: inline; }
+
+/* Catalogue de l'accueil : une ligne par exemple, avec son implémentation technique */
+.catalogue { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.catalogue li { background: var(--surface); border: var(--bordure-cadre); filter: var(--ombre); }
+.catalogue li > a {
+  /* Le nom tient sur une ligne dans une colonne juste assez large ; tout le reste va aux deux
+     descriptions, dont la technique, plus longue, qui tient ainsi sur une ligne plus longtemps.
+     Largeur fixe et non proportionnelle : les colonnes doivent s'aligner d'une ligne à l'autre. */
+  display: grid; grid-template-columns: 150px minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 4px 14px; align-items: baseline;
+  padding: var(--pad-cadre); color: inherit; text-decoration: none;
+  transition: background .12s;
+}
+.catalogue li > a:hover, .catalogue li > a:focus-visible { background: var(--h1-soft); }
+.catalogue .titre {
+  font-family: var(--police-titres); font-weight: 700; color: var(--h2); white-space: nowrap;
+}
+.catalogue li > a:hover .titre { text-decoration: underline; }
+@media (max-width: 900px) { .catalogue li > a { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .catalogue li > a { transition: none; } }
+
+/* Section « Comment ça marche ? », alimentée par le Markdown de l'exemple */
+/* Toute section repliable prend l'allure d'un titre de section (la trace redéfinit la sienne). */
+details.cadre > summary {
+  cursor: pointer; font-family: var(--police-titres); font-weight: 700; color: var(--h3);
+  text-transform: uppercase; letter-spacing: .04em; font-size: var(--t-h5);
+}
+details.cadre[open] > summary { margin-bottom: 8px; }
+details.explication h2 { font-size: var(--t-h4); }
+details.explication table { margin: 4px 0; border: var(--bordure-cadre); }
+details.explication pre { background: var(--surface2); }
+
+/* Espace de travail commun aux exemples : interface et réponse à gauche, informations au milieu,
+   boutons d'essai à droite. Deux colonnes quand il n'y a pas d'informations à montrer. */
+.travail {
+  display: grid; gap: var(--ecart); align-items: start;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+}
+.travail.trois { grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 3fr); }
+.travail > .colonne { display: flex; flex-direction: column; gap: var(--ecart); min-width: 0; }
+.essais p { display: flex; gap: 6px; align-items: baseline; margin: 0 0 5px; }
+.essais .btn { flex: none; }
+@media (max-width: 1100px) { .travail, .travail.trois { grid-template-columns: 1fr; } }
+
+/* Trace d'une requête : les échanges avec le modèle, repliés par défaut */
+details.trace > summary {
+  cursor: pointer; color: var(--muted); font-size: var(--t-h6);
+}
+details.trace[open] > summary { margin-bottom: 6px; }
+details.trace h5 { margin: 8px 0 2px; }
+details.trace pre { margin: 0; max-height: 16em; overflow: auto; white-space: pre-wrap; }
+details.trace td.role { vertical-align: top; white-space: nowrap; color: var(--muted); }
+
+/* Attente : le bouton qui a déclenché la requête change de couleur et affiche un sablier */
+form.htmx-request .btn[type="submit"] {
+  background: var(--h4); color: var(--h4-contrast); cursor: progress; pointer-events: none;
+}
+form.htmx-request .btn[type="submit"]::after { content: " ⏳"; }
+.nav .depot {
+  margin-left: auto; padding: 4px 8px; color: var(--menuH-text); text-decoration: none;
+  border: 1px solid var(--menuH-text); border-radius: var(--r-btn); font-size: var(--t-h6);
+  display: inline-flex; align-items: center; gap: 5px;
+}
+/* La marque GitHub prend la couleur du menu : elle reste lisible quel que soit le fond. */
+.nav .depot svg { width: 1.05em; height: 1.05em; fill: currentColor; }
+.nav .depot:hover { background: var(--menuH-hover-bg); }
+
+/* Points d'intégration MLflow, une ligne par page du serveur */
+ul.liens-mlflow { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+ul.liens-mlflow li { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+
+/* Marque : ∃𝑥eᵐpℓᴵᴬ — les exposants et l'italique donnent l'allure d'une formule. */
+.nav .marque { font-size: 1.05em; white-space: nowrap; }
+.nav .marque i { font-style: italic; }
+.nav .marque sup { font-size: .62em; letter-spacing: .04em; }
+.nav .marque .ell { font-style: italic; font-family: "Palatino Linotype", Palatino, serif; }

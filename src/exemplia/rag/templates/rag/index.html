@@ -1,0 +1,55 @@
+{% extends "socle/base.html" %}
+{% block titre %}RAG documentaire{% endblock %}
+{% block contenu %}
+<section class="cadre">
+  <h1>RAG documentaire</h1>
+  <p>Recherche hybride (vecteurs denses + BM25) dans les documents de l'entreprise, filtrée par
+  niveau d'accès avant tout envoi au LLM, puis réponse citant ses sources. Indexation préalable :
+  <code>uv run python -m exemplia.rag.indexer</code>.</p>
+</section>
+<div class="travail trois">
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Question</h3>
+      <form class="formulaire" hx-post="/rag/question" hx-target="#reponse">
+        <input type="text" class="large" name="question" id="question" required>
+        <div class="ligne-champs">
+          <label>Niveau d'accès de l'utilisateur
+            <select name="niveau_acces" id="niveau">
+              {% for n in niveaux %}<option value="{{ n }}">{{ n }}</option>{% endfor %}
+            </select>
+          </label>
+          <label><span><input type="checkbox" name="rerank" value="true" checked> Reranking</span></label>
+        </div>
+        <div><button class="btn" type="submit">Rechercher</button></div>
+      </form>
+    </section>
+    <section class="cadre" id="reponse"><p class="detail">La réponse s'affiche ici.</p></section>
+  </div>
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Documents indexés</h3>
+      <div class="tableau">
+        <table>
+          <thead><tr><th>Document</th><th>Accès</th></tr></thead>
+          <tbody>
+            {% for d in documents %}
+            <tr><td>{{ d.titre }}</td><td><span class="etiquette e2">{{ d.acces }}</span></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+  <div class="colonne">
+    <section class="cadre essais">
+      <h3>Exemples d'utilisation</h3>
+      {% for niveau, q in questions %}
+      <p><button class="btn b2" type="button" data-q="{{ q }}" data-n="{{ niveau }}"
+        onclick="question.value=this.dataset.q; niveau.value=this.dataset.n">Essayer</button>
+        <span class="etiquette">{{ niveau }}</span> {{ q }}</p>
+      {% endfor %}
+    </section>
+  </div>
+</div>
+{% endblock %}

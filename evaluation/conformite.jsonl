@@ -1,0 +1,3 @@
+{"inputs": {"contrat": "contrat-fournisseur-logistique"}, "expectations": {"verdicts": {"R1": ["conforme"], "R2": ["conforme"], "R3": ["conforme"], "R4": ["conforme"], "R5": ["conforme"], "R6": ["conforme"], "R7": ["conforme"]}}}
+{"inputs": {"contrat": "contrat-fournisseur-emailing"}, "expectations": {"verdicts": {"R1": ["non_conforme"], "R2": ["non_conforme", "absent"], "R3": ["non_conforme"], "R4": ["non_conforme"], "R5": ["non_conforme"], "R6": ["non_conforme", "a_verifier"], "R7": ["non_conforme"]}}}
+{"inputs": {"contrat": "contrat-fournisseur-maintenance"}, "expectations": {"verdicts": {"R1": ["conforme"], "R2": ["non_conforme", "absent"], "R3": ["conforme"], "R4": ["non_conforme"], "R5": ["conforme"], "R6": ["non_conforme", "a_verifier"], "R7": ["conforme"]}}}

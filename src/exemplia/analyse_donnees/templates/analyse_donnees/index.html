@@ -1,0 +1,44 @@
+{% extends "socle/base.html" %}
+{% block titre %}Analyse de données{% endblock %}
+{% block contenu %}
+<section class="cadre">
+  <h1>Analyse de données</h1>
+  <p>La question est traduite en SQL par le LLM, la requête est validée (SELECT seul, tables et
+  colonnes autorisées, LIMIT) puis exécutée avec un rôle en lecture seule. Le LLM rédige ensuite la
+  synthèse à partir du résultat, affiché à côté.</p>
+</section>
+<div class="travail trois">
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Question</h3>
+      <form class="formulaire" hx-post="/analyse/question" hx-target="#resultat">
+        <input type="text" class="large" name="question" id="question" required>
+        <div><button class="btn" type="submit">Analyser</button></div>
+      </form>
+    </section>
+    <div id="resultat"></div>
+  </div>
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Tables interrogeables</h3>
+      <div class="tableau">
+        <table>
+          <thead><tr><th>Table</th><th>Colonnes</th></tr></thead>
+          <tbody>{% for nom, colonnes in tables %}<tr><td>{{ nom }}</td><td>{{ colonnes }}</td></tr>{% endfor %}</tbody>
+        </table>
+      </div>
+      <p class="detail">Toute autre table est refusée par la validation, et le rôle PostgreSQL
+      utilisé est en lecture seule.</p>
+    </section>
+  </div>
+  <div class="colonne">
+    <section class="cadre essais">
+      <h3>Exemples d'utilisation</h3>
+      {% for q in questions %}
+      <p><button class="btn b2" type="button" data-q="{{ q }}"
+        onclick="question.value=this.dataset.q">Essayer</button> {{ q }}</p>
+      {% endfor %}
+    </section>
+  </div>
+</div>
+{% endblock %}

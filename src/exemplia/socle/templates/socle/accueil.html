@@ -1,0 +1,22 @@
+{% extends "socle/base.html" %}
+{% block contenu %}
+<section class="cadre">
+  <h1>Exemplia — cas d'usage IA en entreprise</h1>
+  <p>Exemples construits sur une entreprise fictive commune, avec des modèles locaux. Chaque exemple
+  intègre la garde (filtres d'entrée et de sortie) et les traces MLflow.</p>
+  <p>Modèle de conversation : <span class="etiquette">{{ modele_chat }}</span>
+  · juge : <span class="etiquette e2">{{ modele_juge }}</span>
+  · traces : <a href="{{ mlflow_url }}">{{ mlflow_url }}</a></p>
+</section>
+<ul class="catalogue">
+  {% for e in catalogue %}
+  <li>
+    <a href="{{ e.url }}">
+      <span class="titre">{{ e.titre }}</span>
+      <span>{{ e.resume }}</span>
+      <span class="detail">{{ e.technique }}</span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

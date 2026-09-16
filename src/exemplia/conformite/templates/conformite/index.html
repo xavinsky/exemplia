@@ -1,0 +1,51 @@
+{% extends "socle/base.html" %}
+{% block titre %}Conformité{% endblock %}
+{% block contenu %}
+<section class="cadre">
+  <h1>Étude de conformité</h1>
+  <p>Chaque règle du référentiel des achats est vérifiée séparément : verdict structuré, clause
+  citée et raisonnement. La citation est contrôlée par le code ; la décision finale reste humaine.</p>
+</section>
+<div class="travail trois">
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Contrat à analyser</h3>
+      <form class="formulaire" hx-post="/conformite/analyser" hx-target="#rapport">
+        <label>Contrat de l'entreprise
+          <select name="contrat" id="contrat">
+            {% for c in contrats %}<option value="{{ c.nom }}">{{ c.titre }}</option>{% endfor %}
+          </select>
+        </label>
+        <label>Ou texte collé (prioritaire s'il est rempli)
+          <textarea name="texte" id="texte" placeholder="Collez ici un autre contrat"></textarea>
+        </label>
+        <div><button class="btn" type="submit">Analyser</button></div>
+      </form>
+    </section>
+    <section class="cadre" id="rapport"><p class="detail">Le rapport s'affiche ici.</p></section>
+  </div>
+  <div class="colonne">
+    <section class="cadre">
+      <h3>Référentiel</h3>
+      <div class="tableau">
+        <table>
+          <thead><tr><th>Règle</th><th>Exigence</th></tr></thead>
+          <tbody>{% for r in regles %}<tr><td>{{ r.code }} — {{ r.titre }}</td><td>{{ r.texte }}</td></tr>{% endfor %}</tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+  <div class="colonne">
+    <section class="cadre essais">
+      <h3>Exemples d'utilisation</h3>
+      {% for c in contrats %}
+      <p>
+        <button class="btn b2" type="button" data-c="{{ c.nom }}" data-texte="{{ c.contenu }}"
+          onclick="contrat.value = this.dataset.c; texte.value = this.dataset.texte">Essayer</button>
+        <span>{{ c.titre }}<br><span class="detail">{{ resumes.get(c.nom, '') }}</span></span>
+      </p>
+      {% endfor %}
+    </section>
+  </div>
+</div>
+{% endblock %}

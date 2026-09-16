@@ -1,0 +1,18 @@
+{% include "socle/trace.html" %}
+<h3>Décision : <span class="verdict-{{ resultat.decision.value }}">{{ resultat.decision.value }}</span></h3>
+<div class="tableau">
+  <table>
+    <thead><tr><th>Contrôle</th><th>Verdict</th><th>Raison</th></tr></thead>
+    <tbody>
+      {% for v in resultat.verdicts %}
+      <tr>
+        <td>{{ v.controle }}</td>
+        <td class="verdict-{{ v.decision.value }}">{{ v.decision.value }}</td>
+        <td>{{ v.raison }}{% if v.details %} <code>{{ v.details | tojson }}</code>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<h5>Texte transmis</h5>
+<pre>{{ resultat.texte }}</pre>

@@ -1,0 +1,10 @@
+{"inputs": {"question": "Combien de tickets y a-t-il par catégorie ?"}, "expectations": {"sql_reference": "SELECT categorie, COUNT(*) FROM tickets GROUP BY categorie"}}
+{"inputs": {"question": "Combien de commandes sont en préparation ?"}, "expectations": {"sql_reference": "SELECT COUNT(*) FROM commandes WHERE statut = 'en_preparation'"}}
+{"inputs": {"question": "Quel est le montant total des commandes livrées ?"}, "expectations": {"sql_reference": "SELECT SUM(montant) FROM commandes WHERE statut = 'livree'"}}
+{"inputs": {"question": "Combien de clients ont au moins une commande retournée ?"}, "expectations": {"sql_reference": "SELECT COUNT(DISTINCT client_id) FROM commandes WHERE statut = 'retournee'"}}
+{"inputs": {"question": "Quelle quantité totale a été commandée pour chaque produit ?"}, "expectations": {"sql_reference": "SELECT p.libelle, SUM(l.quantite) FROM lignes_commande l JOIN produits p ON p.id = l.produit_id GROUP BY p.libelle"}}
+{"inputs": {"question": "Quel est le panier moyen des commandes non annulées ?"}, "expectations": {"sql_reference": "SELECT ROUND(AVG(montant), 2) FROM commandes WHERE statut <> 'annulee'"}}
+{"inputs": {"question": "Combien de commandes contiennent au moins un abonnement ?"}, "expectations": {"sql_reference": "SELECT COUNT(DISTINCT l.commande_id) FROM lignes_commande l JOIN produits p ON p.id = l.produit_id WHERE p.type = 'abonnement'"}}
+{"inputs": {"question": "Quels sont les trois produits qui ont généré le plus de chiffre d'affaires ?"}, "expectations": {"sql_reference": "SELECT p.libelle, SUM(l.quantite * l.prix_unitaire) AS ca FROM lignes_commande l JOIN produits p ON p.id = l.produit_id GROUP BY p.libelle ORDER BY ca DESC LIMIT 3"}}
+{"inputs": {"question": "Combien de clients n'ont passé aucune commande ?"}, "expectations": {"sql_reference": "SELECT COUNT(*) FROM clients c WHERE NOT EXISTS (SELECT 1 FROM commandes o WHERE o.client_id = c.id)"}}
+{"inputs": {"question": "Quel est le nombre de commandes par statut ?"}, "expectations": {"sql_reference": "SELECT statut, COUNT(*) FROM commandes GROUP BY statut"}}

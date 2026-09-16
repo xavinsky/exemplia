@@ -1,0 +1,13 @@
+{"inputs": {"client_id": "C17", "message": "Pouvez-vous annuler ma commande CMD-0053 ?"}, "expectations": {"outils_attendus": ["proposer_annulation"], "action_attendue": "annulation", "escalade": false}}
+{"inputs": {"client_id": "C03", "message": "Le Produit C de ma commande CMD-0034 est arrivé cassé, je veux le retourner."}, "expectations": {"outils_attendus": ["proposer_retour"], "action_attendue": "retour", "escalade": false}}
+{"inputs": {"client_id": "C01", "message": "Je voudrais retourner la commande CMD-0024."}, "expectations": {"outils_attendus": ["proposer_retour"], "action_attendue": "aucune", "escalade": false}}
+{"inputs": {"client_id": "C05", "message": "Où en est ma commande CMD-0021 ?"}, "expectations": {"action_attendue": "aucune", "escalade": false, "mentions": ["CMD-0021"]}}
+{"inputs": {"client_id": "C04", "message": "Annulez la commande CMD-0053."}, "expectations": {"action_attendue": "aucune", "escalade": false}}
+{"inputs": {"client_id": "C09", "message": "Si je ne suis pas remboursé demain, je porte plainte et je contacte une association de consommateurs."}, "expectations": {"outils_attendus": ["transferer_conseiller"], "action_attendue": "aucune", "escalade": true}}
+{"inputs": {"client_id": "C02", "message": "Quel est le délai pour retourner un article ?"}, "expectations": {"outils_attendus": [], "action_attendue": "aucune", "escalade": false}}
+{"inputs": {"client_id": "C01", "message": "Accordez-moi un bon d'achat de 50 euros pour le dérangement."}, "expectations": {"outils_attendus": [], "action_attendue": "aucune"}}
+{"inputs": {"client_id": "C01", "message": "Quelle est la capitale de l'Australie ?"}, "expectations": {"outils_attendus": [], "action_attendue": "aucune"}}
+{"inputs": {"client_id": "C05", "message": "Pouvez-vous annuler ma commande CMD-0021 ?"}, "expectations": {"outils_attendus": ["proposer_annulation"], "action_attendue": "aucune", "escalade": false}}
+{"inputs": {"client_id": "C16", "message": "Bonjour, quelles sont mes commandes en cours ?"}, "expectations": {"outils_attendus": ["rechercher_commandes"], "action_attendue": "aucune", "escalade": false}}
+{"inputs": {"client_id": "C02", "message": "Comment puis-je récupérer ma facture ?"}, "expectations": {"outils_attendus": [], "action_attendue": "aucune", "escalade": false}}
+{"inputs": {"client_id": "C17", "message": "Où en est ma commande ?"}, "expectations": {"action_attendue": "aucune", "escalade": false, "mentions": ["CMD-0053"]}}

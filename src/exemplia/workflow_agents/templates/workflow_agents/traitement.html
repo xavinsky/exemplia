@@ -1,0 +1,41 @@
+<section class="cadre" id="traitement-{{ id }}">
+  <h2>Traitement <span class="etiquette">{{ mode }}</span>
+    {% if etat.statut %}<span class="etiquette {{ 'e3' if etat.statut == 'envoyee' else 'e4' }}">{{ etat.statut }}</span>{% endif %}</h2>
+  {% include "socle/trace.html" %}
+  <h5>Étapes exécutées</h5>
+  <div class="fil">
+    {% for noeud, valeurs in etapes %}
+    <details class="msg outil">
+      <summary>{{ noeud }}</summary>
+      {{ valeurs | tojson(indent=2) }}
+    </details>
+    {% endfor %}
+  </div>
+  {% for a in etat.alertes or [] %}<div class="msg garde">{{ a }}</div>{% endfor %}
+  {% if etat.motifs_escalade %}
+  <h5>Escalade vers un responsable</h5>
+  {% for m in etat.motifs_escalade %}<div class="msg garde">{{ m }}</div>{% endfor %}
+  {% endif %}
+
+  {% if en_attente %}
+  <h4>Validation humaine</h4>
+  <form class="formulaire" hx-post="/workflow/valider" hx-target="#traitement-{{ id }}" hx-swap="outerHTML">
+    <input type="hidden" name="identifiant" value="{{ id }}">
+    <label>Brouillon (modifiable)
+      <textarea name="texte" rows="10">{{ etat.brouillon or '' }}</textarea>
+    </label>
+    {% if etat.action_proposee %}
+    <label><span><input type="checkbox" name="executer_action" value="true">
+      Exécuter l'action vérifiée : {{ etat.action_proposee.type }} de {{ etat.action_proposee.commande_id }}</span></label>
+    {% endif %}
+    <div>
+      <button class="btn b3" name="approuver" value="true">Approuver et envoyer</button>
+      <button class="btn b4" name="approuver" value="false">Rejeter</button>
+    </div>
+  </form>
+  {% elif etat.decision %}
+  <h5>Réponse envoyée</h5>
+  <pre>{{ etat.decision.texte }}</pre>
+  {% for c in (etat.faits or {}).get('execution', []) %}<div class="msg systeme">{{ c }}</div>{% endfor %}
+  {% endif %}
+</section>

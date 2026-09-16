@@ -1,0 +1,38 @@
+{% if mesure %}
+<details class="cadre trace">
+  <summary>Trace · {{ mesure.appels }} appel{{ 's' if mesure.appels > 1 else '' }} au modèle{% if mesure.embeddings %}, {{ mesure.embeddings }} appel{{ 's' if mesure.embeddings > 1 else '' }} d'embeddings{% endif %} · {{ mesure.duree_s }} s</summary>
+  {% for e in mesure.echanges %}
+  <h5>Appel {{ loop.index }} — {{ e.modele }}{% if e.outils %} · outils proposés : {{ e.outils | join(', ') }}{% endif %}</h5>
+  <div class="tableau">
+    <table>
+      <tbody>
+        {% for m in e.messages %}
+        <tr>
+          <td class="role">{{ m.role }}{% if m.tool_calls %} (outils){% endif %}</td>
+          <td><pre>{{ m.content if m.content else (m.tool_calls | tojson(indent=2)) }}</pre></td>
+        </tr>
+        {% endfor %}
+  {% set traces = lien_traces_mlflow() %}
+  {% if traces %}
+  <p class="detail">Les mêmes échanges, avec leurs spans et leurs durées, sont dans
+  <a href="{{ traces }}" target="_blank" rel="noopener">les traces MLflow</a>.</p>
+  {% endif %}
+        <tr><td class="role">réponse</td><td><pre>{{ e.reponse }}</pre></td></tr>
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+  {% set traces = lien_traces_mlflow() %}
+  {% if traces %}
+  <p class="detail">Les mêmes échanges, avec leurs spans et leurs durées, sont dans
+  <a href="{{ traces }}" target="_blank" rel="noopener">les traces MLflow</a>.</p>
+  {% endif %}
+  {% if not mesure.echanges %}
+  <p class="detail">
+    {%- if mesure.embeddings %}Aucune génération de texte : seuls des embeddings ont été calculés,
+    puis un modèle local a décidé.
+    {%- else %}Aucun appel au serveur de modèles : la réponse vient entièrement du code.{% endif %}
+  </p>
+  {% endif %}
+</details>
+{% endif %}

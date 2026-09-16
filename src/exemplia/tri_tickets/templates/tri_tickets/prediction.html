@@ -1,0 +1,8 @@
+{% if erreur %}
+<div class="msg garde">{{ erreur }}</div>
+{% else %}
+<p>Catégorie : <span class="etiquette e3">{{ categorie }}</span>
+{% if score %}<span class="detail">confiance {{ '%.2f' % score }}</span>{% endif %}
+— approche <span class="etiquette e2">{{ libelle }}</span></p>
+{% endif %}
+{% include "socle/trace.html" %}

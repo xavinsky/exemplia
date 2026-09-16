@@ -1,0 +1,34 @@
+<h3>Réponse</h3>
+{% include "socle/trace.html" %}
+<div class="msg assistant">{{ reponse.texte | markdown }}</div>
+{% if reponse.sources %}
+<h5>Sources citées</h5>
+{% for s in reponse.sources %}
+<details class="cadre">
+  <summary>[{{ loop.index }}] {{ s.titre_document }} — {{ s.section }} <span class="etiquette e2">{{ s.acces }}</span></summary>
+  <pre>{{ s.texte }}</pre>
+</details>
+{% endfor %}
+{% endif %}
+{% if reponse.candidats %}
+<h5>Passages récupérés</h5>
+<div class="tableau">
+  <table>
+    <thead><tr><th>Passage</th><th>Accès</th><th>Fusion RRF</th><th>Rerank</th></tr></thead>
+    <tbody>
+      {% for c in reponse.candidats %}
+      <tr>
+        <td>{{ c.passage.titre_document }} — {{ c.passage.section }}</td>
+        <td>{{ c.passage.acces }}</td>
+        <td>{{ '%.3f' % c.score_fusion }}</td>
+        <td>{{ '%.3f' % c.score_rerank if c.score_rerank is not none else '—' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% if reponse.verdicts %}
+<h5>Garde</h5>
+<p>{% for v in reponse.verdicts %}<span class="etiquette {{ 'e3' if v.decision.value == 'autoriser' else 'e4' }}">{{ v.controle }} : {{ v.decision.value }}</span> {% endfor %}</p>
+{% endif %}
