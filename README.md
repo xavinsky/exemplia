@@ -52,3 +52,7 @@ Tous les exemples fonctionnent alors, à deux exceptions près : le fine-tuning 
 | [Installation et exécution](doc/installation.md) | détail des cibles `make`, variante sans GPU, modèles par défaut, contexte Ollama |
 | [Architecture](doc/architecture.md) | principes, vue d'ensemble, briques techniques, modules transversaux, arborescence |
 | [Évaluation et résultats](doc/evaluation.md) | tests, jeux d'évaluation, scores mesurés avec les modèles locaux |
+
+## Licence
+
+[MIT](LICENSE) — Xavier Manach.
