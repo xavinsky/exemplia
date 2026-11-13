@@ -759,3 +759,16 @@ td.col-resultat{background:var(--result-tint); color:var(--sec4-dark); width:30%
 html.sidebar-cachee #sidebar-show{display:flex;}
 html.sidebar-cachee #sidebar{display:none;}
 #topnav .brand{padding-left:12px;}
+
+/* Lien vers le dépôt GitHub, dans le bandeau */
+#depot-link{flex:none; display:flex; align-items:center; gap:6px; margin-left:12px; padding:3px 8px; border-radius:4px;
+  font-size:12px; color:rgba(255,255,255,0.8); text-decoration:none; white-space:nowrap;}
+#depot-link:hover{background:rgba(255,255,255,0.15); color:#fff;}
+#depot-link svg{display:block;}
+/* Lien vers le code d'un exemple, en tête de ses pages */
+.md .code-source{font-size:12.5px; margin:0 0 10px;}
+
+/* Menu latéral de l'Accueil : autres projets IA */
+.nav-projet{display:flex; flex-direction:column; gap:2px; padding-top:8px; padding-bottom:8px; text-decoration:none;}
+.nav-projet-nom{font-weight:600;}
+.nav-projet-desc{font-size:12px; line-height:1.4; opacity:0.85;}

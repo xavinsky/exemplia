@@ -159,6 +159,21 @@ PAGES.forEach(page => {
   else buildSectionsPage(page, nav, main);
 });
 
+// Menu latéral de l'Accueil : les autres projets IA de tekio.org (site.yml, `projets`)
+const navAccueil = document.getElementById("navbody-accueil");
+if (navAccueil && SITE.projets.length){
+  const projets = makeNavBox(navAccueil, "group", "Autres projets IA");
+  projets.box.classList.remove("collapsed");
+  SITE.projets.forEach(p => {
+    const a = el("a", "nav-item nav-projet");
+    a.href = p.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.innerHTML = '<span class="nav-projet-nom">' + escapeHtml(p.nom) + ' ↗</span><span class="nav-projet-desc">' + escapeHtml(p.desc) + '</span>';
+    projets.items.appendChild(a);
+  });
+}
+
 // Boîte repliable du menu latéral, même composant pour un groupe et un sous-groupe
 function makeNavBox(parent, kind, label, count){
   const box = el("div", "nav-" + kind + " collapsed");

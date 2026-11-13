@@ -15,7 +15,7 @@ push sur `main`.
 
 | Élément | Rôle |
 |---|---|
-| `content/site.yml` | Onglets, groupes du menu, et pour un groupe la liste des modules de `src/exemplia/` publiés |
+| `content/site.yml` | Onglets, groupes du menu, pour un groupe la liste des modules de `src/exemplia/` publiés, et les autres projets IA de tekio.org listés dans le menu de l'Accueil |
 | `content/<onglet>/<groupe>/<NN>-<slug>.md` | Une section : texte propre au site, ou renvoi vers un fichier du dépôt (`source: doc/installation.md`), le texte du fichier s'ajoutant alors à la fin |
 | `content/lexique.md` | Un terme par titre `## Terme`, avec un lien vers la section qui le détaille |
 | `build/build.py` | Compilation, réécriture des liens et des images, contrôle des liens internes, pages statiques, `sitemap.xml` |
@@ -29,6 +29,9 @@ Pour chaque module listé dans `site.yml` :
 |---|---|---|
 | Présentation | `<module>` (`_` remplacé par `-`) | `src/exemplia/<module>/README.md`, titre de premier niveau retiré |
 | Comment ça marche ? | `<module>-fonctionnement` | `src/exemplia/<module>/comment-ca-marche.md`, s'il existe |
+
+Les deux pages s'ouvrent sur un lien vers le répertoire du module sur GitHub. Le bandeau du site porte
+le lien vers la racine du dépôt.
 
 Le schéma de composants de chaque exemple est le bloc Mermaid de la section « Composants de
 l'exemple » de son README : flux numérotés ①②③…, expliqués dans la liste qui suit le schéma, et

@@ -39,3 +39,15 @@ pages:
   - key: lexique
     label: Lexique
     type: lexique
+
+# Autres projets IA de tekio.org, listés dans le menu latéral de l'Accueil.
+projets:
+  - nom: MemorIA
+    url: https://tekio.org/memoria/
+    desc: Aide-mémoire data science et IA — modélisation, concepts, syntaxes, lexique et références.
+  - nom: AmeliorIA
+    url: https://tekio.org/amelioria/
+    desc: Améliorer un modèle existant sans réentraîner de zéro — 20 méthodes, exemples mesurés.
+  - nom: MemorIA GCP
+    url: https://tekio.org/memoria-gcp/
+    desc: Aide-mémoire data, IA et DevOps sur Google Cloud.

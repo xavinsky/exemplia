@@ -14,6 +14,7 @@ Le texte n'est pas recopié dans le site : chaque page lit un fichier Markdown d
   content/lexique.md                      un terme par titre `## Terme`
   src/exemplia/<module>/README.md         page « Présentation » de chaque module listé dans site.yml
   src/exemplia/<module>/comment-ca-marche.md  page « Comment ça marche ? », s'il existe
+                                          (les deux s'ouvrent sur le lien du répertoire du module sur GitHub)
 
 Front matter d'une section : title (obligatoire), id (à défaut le slug du nom de fichier), nav
 (libellé du menu), subgroup, description (référencement ; à défaut, le premier paragraphe), source.
@@ -261,10 +262,15 @@ def module_entries(module):
         raise BuildError(f"site.yml : module sans README {readme.relative_to(DEPOT)}")
     title, body = split_title(readme.read_text(encoding="utf-8"))
     ident = module_id(module)
+    dossier = f"src/exemplia/{module}/"
+    code = (f'<p class="code-source">Code de l\'exemple : <a href="{GITHUB}/tree/main/{dossier}" target="_blank" '
+            f'rel="noopener"><code>{dossier}</code></a> sur GitHub</p>\n\n')
+    body = code + body
     entries = [(readme, {"title": title, "nav": "Présentation", "id": ident, "subgroup": title}, body)]
     explication = MODULES / module / FONCTIONNEMENT
     if explication.is_file():
         _, corps = split_title(explication.read_text(encoding="utf-8"))
+        corps = code + corps
         entries.append((explication, {"title": f"Comment ça marche ? {title}", "nav": "Comment ça marche ?",
                                       "id": f"{ident}-fonctionnement", "subgroup": title,
                                       "description": f"{title} : déroulé, diagramme et briques de l'exemple Exemplia."},
@@ -502,6 +508,7 @@ def main():
         "title": site["title"],
         "updated": datetime.date.fromisoformat(updated).strftime("%d/%m/%Y"),
         "pages": site["pages"],
+        "projets": site.get("projets", []),
         "sections": sections,
         "lexique": lexique,
     }
