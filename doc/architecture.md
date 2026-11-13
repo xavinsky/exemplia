@@ -20,29 +20,56 @@ et lisible, pas une plateforme clé en main.
 
 ## Vue d'ensemble
 
+```mermaid
+flowchart TD
+  classDef code fill:#ffffff,stroke:#6b7280,color:#1f2937
+  classDef gpu fill:#fecaca,stroke:#dc2626,color:#7f1d1d
+  classDef disque fill:#dcfce7,stroke:#16a34a,color:#14532d
+
+  Nav["navigateur<br/>pages HTML + HTMX"]
+  subgraph Py["Processus Python : uv run exemplia"]
+    Ex["exemples<br/>un routeur par exemple"]
+    Garde["garde<br/>entrée et sortie"]
+    LLM["socle/llm.py<br/>client OpenAI"]
+    Trace["socle/tracage.py<br/>traces MLflow"]
+  end
+  Ollama["Ollama sur l'hôte<br/>chat, juge, modération,<br/>embeddings"]
+  MLflow[("MLflow<br/>traces, runs")]
+  PG[("PostgreSQL<br/>données métier")]
+  Qdrant[("Qdrant<br/>index vectoriel")]
+
+  Nav -- "① HTTP" --> Ex
+  Ex -- "② texte, réponse" --> Garde
+  Ex -- "③ conversation" --> LLM
+  Garde -- "④ modération, juge" --> LLM
+  LLM -- "⑤ HTTP POST /v1" --> Ollama
+  Ex -- "⑥ SQL" --> PG
+  Ex -- "⑦ HTTP" --> Qdrant
+  Trace -- "⑧ HTTP" --> MLflow
+  Garde ~~~ Trace
+  LLM ~~~ PG
+  LLM ~~~ Qdrant
+
+  class Ex,Garde,LLM,Trace code
+  class Ollama gpu
+  class PG,Qdrant,MLflow disque
 ```
-            navigateur
-                │
-      ┌─────────▼──────────┐
-      │  FastAPI (portail) │  un routeur par exemple, pages HTML + HTMX
-      └─────────┬──────────┘
-                │
-   ┌────────────┼─────────────────────────────────────────┐
-   │        exemples (service client, RAG, ...)           │
-   │            │                    │                    │
-   │     ┌──────▼───────┐     ┌──────▼──────┐             │
-   │     │    garde     │     │   LLMOps    │ traces,     │
-   │     │ entrée/sortie│     │  (MLflow)   │ évaluation  │
-   │     └──────┬───────┘     └─────────────┘             │
-   │            │                                         │
-   │     ┌──────▼──────┐                                  │
-   │     │ client LLM  │ ─── API compatible OpenAI ──► Ollama
-   │     └─────────────┘                                  │
-   └──────────────────────────────────────────────────────┘
-          │                 │                  │
-     PostgreSQL          Qdrant             MLflow
-   (données métier)  (index vectoriel)  (traces, runs, registry)
-```
+
+- **① Interface.** Le navigateur envoie formulaires et requêtes HTMX à l'application FastAPI, qui
+  regroupe un routeur par exemple ; les pages sont rendues côté
+  serveur (Jinja) et HTMX remplace des fragments sans framework front-end.
+- **② Garde.** Chaque exemple fait passer le texte entrant, puis la réponse produite, par les
+  contrôles de la garde : règles, Presidio, modération, LLM juge, selon ce que l'exemple active.
+- **③ ④ Client LLM.** Exemples et garde n'appellent les modèles qu'à travers le client du socle, qui ne
+  connaît que l'API compatible OpenAI ; il est remplacé par un faux client scripté dans les tests.
+- **⑤ Ollama.** Le client appelle `/v1/chat/completions` et `/v1/embeddings`. Le serveur de modèles
+  tourne sur l'hôte, pour l'accès natif au GPU ; son adresse se
+  change dans `.env` (`IACU_LLM_BASE_URL`). Seul l'exemple Vertex AI, lancé à part, appelle un
+  modèle cloud.
+- **⑥ ⑦ Données.** PostgreSQL porte les données de l'Entreprise Exemple (avec un rôle `lecteur` en
+  lecture seule pour l'analyse de données), Qdrant l'index documentaire du RAG.
+- **⑧ Traces.** Chaque requête est tracée dans MLflow, qui garde aussi les runs d'évaluation et le
+  registry des modèles du tri des tickets.
 
 ## Briques techniques
 

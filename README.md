@@ -47,6 +47,8 @@ Tous les exemples fonctionnent alors, à deux exceptions près : le fine-tuning 
 
 ## Documentation
 
+Toute la documentation se lit aussi sur le site https://tekio.org/exemplia/.
+
 | Document | Contenu |
 |---|---|
 | [Installation et exécution](doc/installation.md) | détail des cibles `make`, variante sans GPU, modèles par défaut, contexte Ollama |

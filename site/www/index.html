@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- seo -->
+<title>Exemplia : cas d'usage d'IA en entreprise sur modèles locaux</title>
+<meta name="description" content="Exemples de référence des cas d'usage d'IA les plus fréquents en entreprise, sur modèles locaux : service client, RAG, conformité, analyse de données, tri de tickets, agents, avec garde, évaluation et traces.">
+<link rel="canonical" href="https://tekio.org/exemplia/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="tekio.org">
+<meta property="og:title" content="Exemplia : cas d'usage d'IA en entreprise sur modèles locaux">
+<meta property="og:description" content="Exemples de référence des cas d'usage d'IA les plus fréquents en entreprise, sur modèles locaux : service client, RAG, conformité, analyse de données, tri de tickets, agents, avec garde, évaluation et traces.">
+<meta property="og:url" content="https://tekio.org/exemplia/">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "WebSite", "name": "Exemplia", "url": "https://tekio.org/exemplia/", "inLanguage": "fr", "description": "Exemples de référence des cas d'usage d'IA les plus fréquents en entreprise, sur modèles locaux : service client, RAG, conformité, analyse de données, tri de tickets, agents, avec garde, évaluation et traces.", "isPartOf": {"@type": "WebSite", "name": "tekio.org", "url": "https://tekio.org/"}}
+</script>
+<!-- /seo -->
+<script>
+// Zoom et thème appliqués avant le premier rendu, pour éviter un saut de mise en page ou un flash
+// de la mauvaise teinte (mêmes clés localStorage que www/engine.js).
+(function(){
+  try {
+    var z = parseFloat(localStorage.getItem("exemplia-zoom")) || 1;
+    document.documentElement.style.zoom = z * 1.2;
+    var t = localStorage.getItem("exemplia-theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    if (localStorage.getItem("exemplia-sidebar-cachee") === "1") document.documentElement.classList.add("sidebar-cachee");
+  } catch (e) {}
+})();
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="topnav">
+  <div class="brand"><button type="button" id="sidebar-show" aria-label="Afficher le menu latéral" title="Afficher le menu (touche M)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/></svg></button><h1 class="marque" title="Doc Exemplia">Doc <span class="nom">∃<i>x</i>e<sup>m</sup>p<span class="ell">ℓ</span><sup>IA</sup></span></h1><a class="home-link" href="https://tekio.org/" title="Retour à tekio.org">tekio.org</a></div>
+  <nav class="top-tabs" id="top-tabs"></nav>
+  <div class="topnav-search">
+    <input type="search" id="search-input" placeholder="Rechercher… ( / )" autocomplete="off" aria-controls="search-results">
+    <div id="search-results" hidden></div>
+  </div>
+  <button type="button" id="theme-toggle" aria-label="Passer en mode sombre" aria-pressed="false">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 3v2M12 19v2M5.64 5.64l1.42 1.42M16.94 16.94l1.42 1.42M3 12h2M19 12h2M5.64 18.36l1.42-1.42M16.94 7.06l1.42-1.42"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M20.6 15.3A9 9 0 0 1 8.7 3.4 9 9 0 1 0 20.6 15.3Z"/></svg>
+  </button>
+</header>
+
+<div id="body-row">
+  <aside id="sidebar">
+    <div id="sidebar-scroll"></div>
+    <div class="sidebar-footer">
+      <div class="zoom-controls">
+        <button id="zoom-out" type="button" aria-label="Réduire le zoom">−</button>
+        <span id="zoom-level">100%</span>
+        <button id="zoom-in" type="button" aria-label="Augmenter le zoom">+</button>
+        <button id="scrollbar-toggle" type="button" aria-label="Afficher ou masquer la barre de défilement du menu"></button>
+        <button id="sidebar-toggle" type="button" aria-label="Masquer le menu latéral" title="Masquer le menu (touche M)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg></button>
+      </div>
+      <div class="last-updated" id="last-updated"></div>
+    </div>
+  </aside>
+  <main id="main-root"></main>
+</div>
+
+<script src="data/content.js"></script>
+<script>const GENERATORS = [];</script>
+<script src="engine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js" defer></script>
+</body>
+</html>

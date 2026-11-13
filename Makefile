@@ -5,7 +5,7 @@
 MODELES = qwen3.5:9b gemma4:12b llama-guard3:8b qwen3-embedding:0.6b
 
 .DEFAULT_GOAL := aide
-.PHONY: aide setup setup-cpu services start stop tests evaluer experiences surveillance
+.PHONY: aide setup setup-cpu services start stop tests evaluer experiences surveillance site
 
 aide: ## Liste les commandes
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) | awk -F':.*?## ' '{printf "  make %-14s %s\n", $$1, $$2}'
@@ -50,3 +50,7 @@ experiences: ## Compare les approches de tri des tickets et promeut le champion
 
 surveillance: ## Note un échantillon des traces récentes de l'application
 	uv run python -m exemplia.llmops.surveillance --heures 24
+
+site: ## Construit le site statique (site/www/), à ouvrir dans un navigateur
+	uv run --no-project --with-requirements site/requirements.txt python site/build/build.py
+	@echo "Ouvrir site/www/index.html"

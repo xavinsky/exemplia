@@ -1,0 +1,6 @@
+www/data/
+www/media/
+__pycache__/
+www/*.html
+!www/index.html
+www/sitemap.xml

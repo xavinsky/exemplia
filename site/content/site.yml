@@ -1,0 +1,41 @@
+# Menu principal : ordre des onglets et, pour chaque onglet, ses groupes (= sous-dossiers de
+# content/<key>/) dans l'ordre d'affichage du menu latéral.
+# type : sections (défaut), lexique.
+# modules : pour un groupe, les modules de src/exemplia/ dont le README (page « Présentation ») et le
+# comment-ca-marche.md (page « Comment ça marche ? ») sont publiés, dans cet ordre, après les
+# fichiers du dossier du groupe.
+
+title: Exemplia
+
+pages:
+  - key: accueil
+    label: Accueil
+    groups:
+      accueil: Exemplia
+
+  - key: exemples
+    label: Exemples
+    groups:
+      cas: Cas d'usage
+      cloud: Modèle cloud
+    modules:
+      cas: [service_client, rag, conformite, analyse_donnees, tri_tickets, workflow_agents]
+      cloud: [vertex_gemini]
+
+  - key: architecture
+    label: Architecture
+    groups:
+      ensemble: Vue d'ensemble
+      transverses: Modules transverses
+    modules:
+      transverses: [garde, llmops, socle]
+
+  - key: utiliser
+    label: Utiliser
+    groups:
+      demarrer: Installer et lancer
+      resultats: Tests et résultats
+
+  - key: lexique
+    label: Lexique
+    type: lexique

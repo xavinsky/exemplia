@@ -87,6 +87,99 @@ texte que la page affiche.
 | `proposer_retour` | écriture | statut `livree`, livraison il y a 30 jours au plus, au moins un produit physique ; motif facultatif, pour que le modèle vérifie l'éligibilité sans le demander d'abord |
 | `transferer_conseiller` | escalade | journalisé ; déclenché aussi par le code sur menace de recours |
 
+## Composants de l'exemple
+
+```mermaid
+flowchart TD
+  classDef externe fill:#fed7aa,stroke:#ea580c,color:#7c2d12
+  classDef code fill:#ffffff,stroke:#6b7280,color:#1f2937
+  classDef gpu fill:#fecaca,stroke:#dc2626,color:#7f1d1d
+  classDef disque fill:#dcfce7,stroke:#16a34a,color:#14532d
+
+  Nav["navigateur<br/>page /service-client, HTMX"]
+  subgraph Py["Processus Python : uv run exemplia"]
+    Web["web.py<br/>POST /service-client/message<br/>POST /service-client/confirmer"]
+    Sess["sessions.py<br/>DepotSessions"]
+    Asst["assistant.py<br/>AssistantServiceClient"]
+    Garde["garde/chaine.py<br/>garde_standard<br/>règles, Presidio"]
+    Outils["outils.py<br/>outils, éligibilité, journal"]
+    LLM["socle/llm.py<br/>ClientOpenAICompatible"]
+  end
+  Ollama["Ollama hôte<br/>qwen3.5:9b, llama-guard3:8b<br/>gemma4:12b"]
+  PG[("PostgreSQL<br/>commandes, journal_actions<br/>sessions_assistant")]
+  MLflow[("MLflow<br/>expérience exemplia")]
+
+  Nav -- "① ⑫ HTTP POST<br/>message, ou confirmation" --> Web
+  Web -- "② ⑪ appel Python<br/>charger, enregistrer" --> Sess
+  Sess -- "② ⑪ SQL<br/>sessions_assistant" --> PG
+  Web -- "③ ⑫ appel Python<br/>repondre, confirmer" --> Asst
+  Asst -- "④ ⑩ appel Python<br/>garde d'entrée, de sortie" --> Garde
+  Garde -- "⑤ ⑩ appel Python<br/>discuter, extraire" --> LLM
+  Asst -- "⑥ ⑦ ⑨ ⑫ appel Python<br/>recours, outils, exécution" --> Outils
+  Outils -- "⑦ ⑨ ⑫ SQL<br/>SELECT, INSERT, UPDATE" --> PG
+  Asst -- "⑧ appel Python<br/>discuter avec outils" --> LLM
+  LLM -- "⑤ ⑧ ⑩ HTTP POST<br/>/v1/chat/completions" --> Ollama
+  Py -. "⑬ HTTP REST<br/>traces et spans" .-> MLflow
+
+  class Web,Sess,Asst,Garde,Outils,LLM code
+  class Ollama gpu
+  class PG,MLflow disque
+```
+
+L'exemple est la page `/service-client` de l'application `uv run exemplia`. Le choix du client dans
+le menu latéral crée une session en base ; chaque message est ensuite traité par une requête HTMX.
+Les modèles sont ceux de `socle/config.py`, surchargeables par `.env` (`IACU_MODELE_CHAT`,
+`IACU_MODELE_GARDE`, `IACU_MODELE_JUGE`) ; PostgreSQL est joint sur `IACU_DATABASE_URL`, Ollama sur
+`IACU_LLM_BASE_URL`. L'assistant lit aussi trois documents Markdown de `data/entreprise/documents/`
+(`conditions-generales-de-vente`, `politique-de-retour`, `faq`), placés en entier dans le prompt.
+
+- **① Message.** Le formulaire envoie `session_id` et `texte` ; la réponse revient sous forme de
+  fragment HTML (`evenements.html`) ajouté au fil : messages, appels d'outils, verdicts de garde,
+  bouton « Confirmer » si une action est en attente.
+- **② Session.** `DepotSessions.charger` relit dans `sessions_assistant` l'historique, les derniers
+  résultats d'outils, l'action en attente et l'état d'escalade, stockés en JSON.
+- **③ Assistant.** `web.py` construit `AssistantServiceClient` avec le client compté par `mesurer`
+  et `garde_standard(client, PERIMETRE)`, puis appelle `repondre`.
+- **④ Garde d'entrée, sans modèle.** Longueur, injection par règles, puis masquage des noms, emails,
+  téléphones, IBAN et cartes par Presidio et spaCy `fr_core_news_md`. C'est le texte masqué qui est
+  envoyé au modèle.
+- **⑤ Modération.** `llama-guard3:8b` reçoit le message ; une réponse `unsafe` bloque le tour avec
+  le message de refus.
+- **⑥ Menace de recours.** `motif_recours` cherche par expression régulière plainte, avocat,
+  tribunal, litige, fraude… ; si elle trouve, `transferer_conseiller` écrit dans `journal_actions`
+  et le tour s'arrête sans appel au LLM.
+- **⑦ Contexte.** `prompt_systeme` lit les commandes du client (`rechercher_commandes`, filtrée sur
+  le `client_id` de la session) et place les dix plus récentes en fin de prompt, après les
+  consignes et les documents.
+- **⑧ Appel au LLM.** `discuter` envoie à `qwen3.5:9b` le prompt système, les cinq derniers tours
+  de conversation et les six définitions d'outils (`tools`, format OpenAI). Le modèle répond par du
+  texte ou par des appels d'outils.
+- **⑨ Outils.** `_dispatcher` valide les arguments avec Pydantic et exécute l'outil avec le
+  `client_id` de la session : lecture SQL, ou vérification d'éligibilité qui met l'action en
+  attente sans rien modifier. Les résultats, délimités, sont ajoutés à l'historique et l'appel ⑧
+  reprend, cinq fois au plus (`max_tours`) ; au-delà, la conversation est transférée.
+- **⑩ Garde de sortie.** Fuite du prompt système, IBAN et cartes bancaires (blocage), puis juge
+  `gemma4:12b` en sortie structurée (`response_format` JSON Schema), qui reçoit la question, les
+  documents, la description du fonctionnement, les commandes du client et les douze derniers
+  résultats d'outils. Un blocage remplace la réponse et transfère la conversation.
+- **⑪ Enregistrement.** `DepotSessions.enregistrer` met à jour la ligne de `sessions_assistant`, ou
+  l'insère.
+- **⑫ Confirmation.** Le clic sur « Confirmer » ou « Refuser » appelle
+  `POST /service-client/confirmer`. `confirmer` vérifie que l'action en attente correspond, puis
+  `executer_annulation` ou `executer_retour` réévalue l'éligibilité et écrit dans `journal_actions`
+  avec une clé d'idempotence ; l'annulation passe aussi la commande au statut `annulee`. Aucun appel
+  au modèle à cette étape. La session est ensuite enregistrée comme en ⑪.
+- **⑬ Traces.** `tracage.activer("exemplia")`, appelé au démarrage, active l'autolog OpenAI de
+  MLflow : chaque appel à Ollama est tracé, ainsi que les spans `service_client.repondre` (`AGENT`),
+  un span par outil (`TOOL`) et un par contrôle de garde, avec le client et la session en
+  métadonnées. Si MLflow est injoignable au démarrage, le traçage est désactivé sans erreur.
+
+**Ce que fait le GPU.** Seul Ollama calcule sur le GPU : `llama-guard3:8b` pour la modération,
+`qwen3.5:9b` pour chaque tour de la boucle d'outils, `gemma4:12b` pour le juge, soit au moins trois
+appels de modèle par message qui passe la garde. Presidio et spaCy, les règles de garde, la
+détection des menaces de recours et l'éligibilité tournent sur le CPU du processus Python ; les
+requêtes SQL, dans PostgreSQL.
+
 ## Lancer
 
 Page `/service-client` de l'application. Choisir le client dans le menu latéral. Exemples de

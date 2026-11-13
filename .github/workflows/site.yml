@@ -1,0 +1,42 @@
+# Construit le site Exemplia (site/build/build.py) et le publie sur GitHub Pages à chaque push sur main.
+name: Site Exemplia
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  construire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0          # dates de mise à jour des pages : git log des fichiers publiés
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r site/requirements.txt
+      - run: python site/build/build.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/www
+
+  publier:
+    needs: construire
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - id: deploiement
+        uses: actions/deploy-pages@v4
