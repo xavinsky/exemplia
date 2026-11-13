@@ -6,6 +6,10 @@ modèles locaux, avec garde (filtres d'entrée et de sortie), évaluation et obs
 Tous les exemples partagent une entreprise fictive neutre, « Entreprise Exemple » (produits
 génériques, clients, commandes, tickets, quelques documents), et une application web FastAPI.
 
+**Site de documentation : https://tekio.org/exemplia/** — chaque exemple y est expliqué (ce qu'il
+fait, son déroulé pas à pas, son schéma de composants), avec l'architecture, l'installation, les
+résultats d'évaluation et un lexique. Le site est construit à partir des fichiers Markdown de ce dépôt.
+
 ![Les huit pages de l'application, un exemple exécuté sur chacune](captures/apercu.webp)
 
 ## Exemples
@@ -46,8 +50,6 @@ Tous les exemples fonctionnent alors, à deux exceptions près : le fine-tuning 
 (`make experiences`) et le classifieur d'injection de la garde.
 
 ## Documentation
-
-Toute la documentation se lit aussi sur le site https://tekio.org/exemplia/.
 
 | Document | Contenu |
 |---|---|
