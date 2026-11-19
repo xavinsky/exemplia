@@ -1,9 +1,9 @@
 # Menu principal : ordre des onglets et, pour chaque onglet, ses groupes (= sous-dossiers de
 # content/<key>/) dans l'ordre d'affichage du menu latéral.
 # type : sections (défaut), lexique.
-# modules : pour un groupe, les modules de src/exemplia/ dont le README (page « Présentation ») et le
-# comment-ca-marche.md (page « Comment ça marche ? ») sont publiés, dans cet ordre, après les
-# fichiers du dossier du groupe.
+# modules : pour un groupe, les modules de src/exemplia/ dont les pages sont publiées, dans cet ordre,
+# après les fichiers du dossier du groupe : README.md (Présentation), comment-ca-marche.md puis
+# fonctionnement.md (Comment ça marche ?), utilisation.md (Comment utiliser ?), evaluation.md (Évaluation).
 
 title: Exemplia
 

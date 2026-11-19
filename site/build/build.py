@@ -13,8 +13,13 @@ Le texte n'est pas recopié dans le site : chaque page lit un fichier Markdown d
                                           propre au fichier s'ajoute alors après celui de la source
   content/lexique.md                      un terme par titre `## Terme`
   src/exemplia/<module>/README.md         page « Présentation » de chaque module listé dans site.yml
-  src/exemplia/<module>/comment-ca-marche.md  page « Comment ça marche ? », s'il existe
-                                          (les deux s'ouvrent sur le lien du répertoire du module sur GitHub)
+  src/exemplia/<module>/comment-ca-marche.md + fonctionnement.md
+                                          page « Comment ça marche ? » : le texte affiché par l'application,
+                                          puis le détail technique (les deux fichiers sont facultatifs)
+  src/exemplia/<module>/utilisation.md    page « Comment utiliser ? », si elle existe
+  src/exemplia/<module>/evaluation.md     page « Évaluation », si elle existe
+                                          (toutes les pages d'un module s'ouvrent sur le lien du répertoire
+                                          du module sur GitHub)
 
 Front matter d'une section : title (obligatoire), id (à défaut le slug du nom de fichier), nav
 (libellé du menu), subgroup, description (référencement ; à défaut, le premier paragraphe), source.
@@ -63,7 +68,12 @@ RESERVED_PAGES = {"index", "engine", "style", "sitemap"}
 DESCRIPTION_MAX = 160
 CALLOUTS = {"NOTE": "tip", "TIP": "tip", "IMPORTANT": "tip", "WARNING": "warning", "CAUTION": "warning"}
 FORMATTER = HtmlFormatter(nowrap=True, classprefix="tok-")
-FONCTIONNEMENT = "comment-ca-marche.md"
+# Pages d'un module après la Présentation : (suffixe d'id, libellé du menu, fichiers concaténés).
+PAGES_MODULE = (
+    ("fonctionnement", "Comment ça marche ?", ("comment-ca-marche.md", "fonctionnement.md")),
+    ("utilisation", "Comment utiliser ?", ("utilisation.md",)),
+    ("evaluation", "Évaluation", ("evaluation.md",)),
+)
 
 
 class BuildError(Exception):
@@ -256,7 +266,8 @@ def module_id(module):
 
 
 def module_entries(module):
-    """(chemin, front matter, corps) des pages d'un module : Présentation, Comment ça marche ?."""
+    """(chemin, front matter, corps) des pages d'un module : Présentation, puis chacune des PAGES_MODULE
+    dont au moins un fichier existe."""
     readme = MODULES / module / "README.md"
     if not readme.is_file():
         raise BuildError(f"site.yml : module sans README {readme.relative_to(DEPOT)}")
@@ -265,16 +276,16 @@ def module_entries(module):
     dossier = f"src/exemplia/{module}/"
     code = (f'<p class="code-source">Code de l\'exemple : <a href="{GITHUB}/tree/main/{dossier}" target="_blank" '
             f'rel="noopener"><code>{dossier}</code></a> sur GitHub</p>\n\n')
-    body = code + body
-    entries = [(readme, {"title": title, "nav": "Présentation", "id": ident, "subgroup": title}, body)]
-    explication = MODULES / module / FONCTIONNEMENT
-    if explication.is_file():
-        _, corps = split_title(explication.read_text(encoding="utf-8"))
-        corps = code + corps
-        entries.append((explication, {"title": f"Comment ça marche ? {title}", "nav": "Comment ça marche ?",
-                                      "id": f"{ident}-fonctionnement", "subgroup": title,
-                                      "description": f"{title} : déroulé, diagramme et briques de l'exemple Exemplia."},
-                        corps))
+    entries = [(readme, {"title": title, "nav": "Présentation", "id": ident, "subgroup": title}, code + body)]
+    for suffixe, libelle, noms in PAGES_MODULE:
+        fichiers = [MODULES / module / nom for nom in noms if (MODULES / module / nom).is_file()]
+        if not fichiers:
+            continue
+        corps = "\n\n".join(split_title(f.read_text(encoding="utf-8"))[1].strip() for f in fichiers) + "\n"
+        entries.append((fichiers[0], {"title": f"{libelle} {title}", "nav": libelle,
+                                      "id": f"{ident}-{suffixe}", "subgroup": title,
+                                      "description": f"{title} : {libelle.rstrip(' ?').lower()} de l'exemple Exemplia."},
+                        code + corps))
     return entries
 
 
@@ -491,6 +502,10 @@ def main():
     site = load_site()
     entries = content_entries(site)
     published = {relative(path): meta["id"] for _, _, path, meta, _ in entries}
+    for _, _, path, meta, _ in entries:
+        for suffixe, _, noms in PAGES_MODULE:
+            if meta["id"].endswith(f"-{suffixe}") and path.parent.parent == MODULES:
+                published.update({relative(path.parent / nom): meta["id"] for nom in noms})
     renderer = Renderer(published)
     sections = load_sections(entries, renderer)
     lexique = load_lexique(renderer)

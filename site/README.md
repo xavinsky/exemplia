@@ -28,13 +28,15 @@ Pour chaque module listé dans `site.yml` :
 | Page | Id | Source |
 |---|---|---|
 | Présentation | `<module>` (`_` remplacé par `-`) | `src/exemplia/<module>/README.md`, titre de premier niveau retiré |
-| Comment ça marche ? | `<module>-fonctionnement` | `src/exemplia/<module>/comment-ca-marche.md`, s'il existe |
+| Comment ça marche ? | `<module>-fonctionnement` | `comment-ca-marche.md` (texte affiché par l'application) puis `fonctionnement.md` (schéma de composants, choix techniques) |
+| Comment utiliser ? | `<module>-utilisation` | `utilisation.md` : commandes, scénarios de démonstration, fichiers du module |
+| Évaluation | `<module>-evaluation` | `evaluation.md` : commande, jeu de test, résultats, comparaisons de modèles |
 
-Les deux pages s'ouvrent sur un lien vers le répertoire du module sur GitHub. Le bandeau du site porte
+Chaque fichier est facultatif : une page sans fichier n'est pas publiée. Les pages s'ouvrent sur un lien vers le répertoire du module sur GitHub. Le bandeau du site porte
 le lien vers la racine du dépôt.
 
 Le schéma de composants de chaque exemple est le bloc Mermaid de la section « Composants de
-l'exemple » de son README : flux numérotés ①②③…, expliqués dans la liste qui suit le schéma, et
+l'exemple » de son `fonctionnement.md` : flux numérotés ①②③…, expliqués dans la liste qui suit le schéma, et
 quatre classes de nœuds (`code` pour le processus Python, `gpu` pour ce qui calcule sur la carte,
 `disque` pour les stockages, `externe` pour les services hors machine). GitHub et le site
 dessinent le même bloc.

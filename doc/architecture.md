@@ -120,7 +120,11 @@ src/exemplia/
   garde/                     filtres d'entrée et de sortie
   llmops/                    scorers, évaluation, surveillance
   service_client/ rag/ conformite/ analyse_donnees/ tri_tickets/ workflow_agents/ vertex_gemini/
+    README.md                présentation : besoin, vue d'ensemble, limites
     comment-ca-marche.md     explication et diagramme affichés dans la page de l'exemple
+    fonctionnement.md        détail technique : composants, choix de conception
+    utilisation.md           commandes, scénarios de démonstration, fichiers
+    evaluation.md            commande d'évaluation, résultats, comparaisons de modèles
 tests/
 ```
 
